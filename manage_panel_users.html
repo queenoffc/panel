@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papa Queen - Kelola Akses Web</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            /* THEME PURPLE DARKMODE 🔥 */
+            --bg-color: #0f0c1c; 
+            --card-bg: #1e1b2e; 
+            --primary: #8b5cf6; 
+            --primary-hover: #7c3aed;
+            --success: #10b981; 
+            --danger: #ef4444; 
+            --warning: #f59e0b; 
+            --text-main: #f8fafc; 
+            --text-sub: #94a3b8; 
+            --input-bg: rgba(29, 21, 56, 0.6); 
+            --border-color: rgba(255,255,255,0.1); 
+        }
+        body { font-family: 'Inter', sans-serif; padding: 20px; background-color: var(--bg-color); color: var(--text-main); margin: 0; }
+        
+        .btn-back { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 25px; padding: 10px 18px; background: rgba(139, 92, 246, 0.1); color: var(--primary); text-decoration: none; border-radius: 10px; font-size: 14px; font-weight: 600; border: 1px solid rgba(139, 92, 246, 0.3); transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .btn-back svg { width: 18px; height: 18px; fill: currentColor; transition: transform 0.3s; }
+        .btn-back:hover { background: var(--primary); color: white; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4); transform: translateY(-2px); }
+        .btn-back:hover svg { transform: translateX(-4px); }
+        
+        h2 { font-weight: 800; margin-bottom: 5px; color: var(--text-main); border-left: 4px solid var(--primary); padding-left: 12px; display: flex; align-items: flex-start; gap: 10px; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; }
+        h2 svg { width: 24px; height: 24px; fill: var(--primary); flex-shrink: 0; margin-top: 2px; }
+        .sub-title { color: var(--text-sub); margin-bottom: 25px; font-size: 14px; line-height: 1.5; }
+        
+        .box { background: var(--card-bg); padding: 25px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); overflow-x: auto; }
+        .box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+        .box-header h3 { margin: 0; font-size: 16px; display: flex; align-items: center; gap: 10px; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+        .box-header h3 svg { width: 20px; height: 20px; fill: var(--primary); flex-shrink: 0; }
+        
+        label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
+        input { width: 100%; padding: 14px; margin-bottom: 15px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 14px; box-sizing: border-box; outline: none; transition: 0.3s; font-family: 'Inter', sans-serif;}
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2); background: rgba(29, 21, 56, 0.9); }
+        
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        
+        .custom-select-wrapper { position: relative; user-select: none; margin-bottom: 20px; }
+        .custom-select-trigger { width: 100%; padding: 14px 15px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 14px; box-sizing: border-box; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; font-weight: 500; }
+        .custom-select-trigger svg { width: 16px; height: 16px; fill: var(--text-sub); transition: transform 0.3s ease; }
+        .custom-select-trigger.active svg { transform: rotate(180deg); fill: var(--primary); }
+                .custom-options { position: absolute; display: none; top: calc(100% + 5px); left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--primary); border-radius: 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 99; overflow: hidden; animation: fadeIn 0.2s ease; }
+        .custom-options.open { display: block; }
+        .custom-option { padding: 14px 15px; font-size: 14px; color: var(--text-main); cursor: pointer; transition: 0.2s; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+        .custom-option svg { width: 18px; height: 18px; fill: var(--text-sub); }
+        .custom-option:hover { background: rgba(139, 92, 246, 0.15); color: var(--primary); padding-left: 20px; font-weight: 600; }
+
+        .btn-tambah { width: 100%; background: linear-gradient(135deg, var(--primary), #d8b4fe); color: white; border: none; cursor: pointer; border-radius: 10px; padding: 15px; font-weight: 700; transition: 0.3s; margin-top: 5px; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4); }
+        .btn-tambah svg { width: 20px; height: 20px; fill: currentColor; }
+        .btn-tambah:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(139, 92, 246, 0.6); }
+
+        table { width: 100%; border-collapse: collapse; min-width: 600px; margin-top: 10px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        th { background: rgba(0,0,0,0.2); color: var(--text-sub); font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; white-space: nowrap; }
+        tr:hover { background: rgba(139, 92, 246, 0.05); }
+        
+        .btn-hapus { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); cursor: pointer; border-radius: 8px; padding: 8px 15px; font-weight: 600; font-size: 13px; transition: 0.3s; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-hapus svg { width: 16px; height: 16px; fill: currentColor; }
+        .btn-hapus:hover { background: var(--danger); color: white; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4); }
+
+        /* CSS BARU UNTUK BADGE STATUS & ROLE */
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 50px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-online { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .status-offline { background: rgba(148, 163, 184, 0.1); color: var(--text-sub); border: 1px solid rgba(148, 163, 184, 0.3); }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .dot-online { background: var(--success); box-shadow: 0 0 5px var(--success); animation: blink 1.5s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .role-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase; background: rgba(139, 92, 246, 0.1); color: var(--primary); border: 1px solid rgba(139, 92, 246, 0.3); }
+
+        /* 🔥 FIX RESPONSIVE UNTUK HP (BIAR GAK NABRAK) 🔥 */
+        @media (max-width: 480px) {
+            h2 { font-size: 18px; }
+            .grid-2 { grid-template-columns: 1fr; gap: 5px; } /* Jadikan 1 kolom atas-bawah */
+            .box-header h3 { font-size: 14px; }
+            input { margin-bottom: 10px; }
+        }
+
+        /* STYLE POP-UP GAYA MINI AI */
+        .mini-ai-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 12, 28, 0.85); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; animation: fadeInPop 0.3s ease; }
+        .mini-ai-popup { background: var(--card-bg); border-radius: 20px; width: 100%; max-width: 420px; padding: 30px; text-align: center; color: var(--text-main); position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.6); border: 1px solid var(--border-color); }
+        .modal-icon-top { width: 60px; height: 60px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .modal-icon-top svg { width: 30px; height: 30px; }
+        
+        .mode-danger .modal-icon-top { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); }
+        .mode-danger .modal-icon-top svg { fill: var(--danger); }
+        .mode-danger .mini-ai-header { color: var(--danger); }
+        .mode-success .modal-icon-top { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); box-shadow: 0 0 20px rgba(16, 185, 129, 0.2); }
+        .mode-success .modal-icon-top svg { fill: var(--success); }
+        .mode-success .mini-ai-header { color: var(--success); }
+        .mode-warning .modal-icon-top { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); box-shadow: 0 0 20px rgba(245, 158, 11, 0.2); }
+        .mode-warning .modal-icon-top svg { fill: var(--warning); }
+        .mode-warning .mini-ai-header { color: var(--warning); }
+        .mode-info .modal-icon-top { background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); box-shadow: 0 0 20px rgba(139, 92, 246, 0.2); }
+        .mode-info .modal-icon-top svg { fill: var(--primary); }
+        .mode-info .mini-ai-header { color: var(--primary); }
+
+        .mini-ai-header { font-size: 20px; font-weight: 800; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .mini-ai-body { font-size: 14px; color: var(--text-sub); line-height: 1.6; margin-bottom: 25px; }
+        .info-detail-ai { background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; text-align: left; margin-bottom: 25px; }
+        .detail-row { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+        .detail-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .detail-label { font-size: 11px; color: var(--text-sub); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+        .detail-label svg { width: 14px; height: 14px; fill: var(--text-sub); }
+        .detail-value { font-size: 14px; font-weight: 600; color: var(--text-main); word-break: break-all; }
+        .value-highlight { color: var(--primary); }
+        .value-pass { color: var(--warning); }
+        
+        .ai-btn-group { display: flex; gap: 12px; }
+        .mini-ai-btn { flex: 1; border: none; padding: 14px; font-weight: 700; font-size: 14px; border-radius: 10px; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .mini-ai-btn svg { width: 18px; height: 18px; fill: currentColor; }
+        
+        .btn-primary-action { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
+        .btn-primary-action:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4); }
+        .btn-danger-action { background: var(--danger); color: white; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+        .btn-danger-action:hover { background: #dc2626; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4); }
+        .btn-outline-action { background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-main); }
+        .btn-outline-action:hover { background: rgba(255,255,255,0.1); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInPop { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    </style>
+</head>
+<body>
+    
+    <a href="index.html" class="btn-back">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        Kembali ke Dashboard
+    </a>
+    
+    <h2>
+        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+        <span>Papa Queen - Kelola Akses Web</span>
+    </h2>
+    <p class="sub-title">Tambahkan Partner atau Reseller yang diizinkan untuk mengelola server di Control Center ini.</p>
+    
+    <div class="box">
+        <div class="box-header">
+            <h3>
+                <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                Buat Akses Login Baru
+            </h3>
+        </div>
+        
+        <div class="grid-2">
+            <div>
+                <label>Username Baru</label>
+                <input type="text" id="webUsername" placeholder="Contoh: reseller_budi" autocomplete="off">
+            </div>
+            <div>
+                <label>Password Akun</label>
+                <input type="text" id="webPassword" placeholder="Buat kata sandi..." autocomplete="off">
+            </div>
+        </div>
+        
+        <div>
+            <label>Tipe Akun (Role)</label>
+            <div class="custom-select-wrapper">
+                <div class="custom-select-trigger" onclick="toggleRoleSelect()">
+                    <span id="customSelectText">Memuat Pilihan...</span>
+                    <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                </div>
+                <div class="custom-options" id="customRoleOptions"></div>
+            </div>
+            <input type="hidden" id="webRole" value="">
+        </div>
+
+        <button class="btn-tambah" onclick="buatAkunWeb()">
+            Buat Akun Sekarang
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+    </div>
+
+    <div class="box">
+        <div class="box-header">
+            <h3>
+                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                Daftar Pengguna Web
+            </h3>
+        </div>
+        <table id="tabelWebUsers">
+            <tr><th>Informasi Akun</th><th>Tipe Akun</th><th>Status</th><th>Aksi</th></tr>
+            <tr><td colspan="4" style="text-align: center; color: var(--text-sub); padding: 30px;">
+                <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; fill: var(--text-sub); animation: spin 1s linear infinite; margin-bottom: 10px;"><path d="M12 4V2C6.48 2 2 6.48 2 12h2c0-4.41 3.59-8 8-8zm0 16c-4.41 0-8-3.59-8-8H2c0 5.52 4.48 10 10 10v-2zM22 12c0-5.52-4.48-10-10-10v2c4.41 0 8 3.59 8 8h-2l3 3 3-3h-2z"/></svg>
+                <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+                <br>Memuat data dari database...
+            </td></tr>
+        </table>
+    </div>
+        <div id="modalAksesDitolak" class="mini-ai-overlay">
+        <div class="mini-ai-popup mode-danger">
+            <div class="modal-icon-top">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            </div>
+            <div class="mini-ai-header">Akses Ditolak</div>
+            <div class="mini-ai-body">Halaman ini khusus untuk Pemilik dan Partner. Silakan kembali.</div>
+            <div class="ai-btn-group">
+                <button class="mini-ai-btn btn-danger-action" onclick="window.location.replace('index.html')">Kembali</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalScreenshot" class="mini-ai-overlay">
+        <div class="mini-ai-popup mode-info">
+            <div class="modal-icon-top">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            </div>
+            <div class="mini-ai-header">Akun Berhasil Dibuat</div>
+            <p style="margin-bottom: 20px; color: var(--text-sub); font-size: 13px;">Berikan data login ini kepada pengguna:</p>
+            <div class="info-detail-ai">
+                <div class="detail-row">
+                    <div class="detail-label"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Kredensial</div>
+                    <div class="detail-value">User: <span id="resUserWeb" class="value-highlight"></span></div>
+                    <div class="detail-value">Pass: <span id="resPassWeb" class="value-pass"></span></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96z"/></svg> Link Login</div>
+                    <div class="detail-value"><a id="resLinkWeb" href="#" target="_blank" style="color: var(--primary); text-decoration: none;"></a></div>
+                </div>
+                <div class="detail-row" style="border: none; padding: 0;">
+                    <div class="detail-label"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg> Jabatan</div>
+                    <div class="detail-value" id="resRoleWeb" style="color: var(--success);"></div>
+                </div>
+            </div>
+            <div class="ai-btn-group">
+                <button class="mini-ai-btn btn-primary-action" onclick="salinDataWeb()" id="btnSalinWeb">Salin Teks</button>
+                <button class="mini-ai-btn btn-outline-action" onclick="tutupModal('modalScreenshot')">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalKonfirmasi" class="mini-ai-overlay">
+        <div class="mini-ai-popup mode-danger">
+            <div class="modal-icon-top"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div>
+            <div class="mini-ai-header">Hapus Akses</div>
+            <div class="mini-ai-body" id="teksKonfirmasi"></div>
+            <div class="ai-btn-group">
+                <button id="btnGasHapus" class="mini-ai-btn btn-danger-action" onclick="eksekusiHapus()">Ya, Cabut!</button>
+                <button class="mini-ai-btn btn-outline-action" onclick="tutupKonfirmasi()">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalInfo" class="mini-ai-overlay">
+        <div class="mini-ai-popup mode-success">
+            <div class="modal-icon-top"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+            <div class="mini-ai-header">Sukses</div>
+            <div class="mini-ai-body" id="teksInfo"></div>
+            <div class="ai-btn-group">
+                <button class="mini-ai-btn btn-primary-action" style="background: var(--success);" onclick="tutupModal('modalInfo')">Oke</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalPeringatan" class="mini-ai-overlay">
+        <div class="mini-ai-popup mode-warning">
+            <div class="modal-icon-top"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+            <div class="mini-ai-header">Peringatan</div>
+            <div class="mini-ai-body" id="teksPeringatan"></div>
+            <div class="ai-btn-group"><button class="mini-ai-btn btn-primary-action" style="background: var(--warning);" onclick="tutupModal('modalPeringatan')">Mengerti</button></div>
+        </div>
+    </div>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        const currentUserId = localStorage.getItem('user_id');
+        const myRole = localStorage.getItem('role') || '';
+        const myUsername = localStorage.getItem('username') || 'Unknown'; 
+        const allowedRoles = ['pemilik', 'partner_public', 'demo'];
+        
+        if (!currentUserId || !allowedRoles.includes(myRole)) {
+            document.getElementById('modalAksesDitolak').style.display = 'flex';
+        }
+
+        // 🔥 LINK FIREBASE BARU SUDAH DIPASANG 🔥
+        const firebaseConfig = { databaseURL: "https://papa-queen-default-rtdb.firebaseio.com/" };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        // 🔥 JANTUNG STATUS ONLINE (Heartbeat) 🔥
+        if (currentUserId) {
+            const userStatusRef = database.ref('users/' + currentUserId + '/isOnline');
+            userStatusRef.set(true);
+            userStatusRef.onDisconnect().set(false);
+        }
+
+        function tutupModal(id) { document.getElementById(id).style.display = 'none'; }
+        function showPeringatan(p) { document.getElementById('teksPeringatan').innerHTML = p; document.getElementById('modalPeringatan').style.display = 'flex'; }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!currentUserId || !allowedRoles.includes(myRole)) return;
+            let opts = document.getElementById('customRoleOptions');
+            let trig = document.getElementById('customSelectText');
+            let roleInp = document.getElementById('webRole');
+            
+            if (myRole === 'pemilik') {
+                opts.innerHTML = `<div class="custom-option selected" onclick="pilihRole('pemilik', 'Pemilik Panel')">Pemilik Panel</div><div class="custom-option" onclick="pilihRole('partner_public', 'Partner Panel')">Partner Panel</div><div class="custom-option" onclick="pilihRole('reseller_private', 'Reseller Private')">Reseller Private</div><div class="custom-option" onclick="pilihRole('reseller_public', 'Reseller Public')">Reseller Public</div><div class="custom-option" onclick="pilihRole('demo', 'Akun Demo')">Akun Demo</div>`;
+                trig.innerText = 'Pemilik Panel'; roleInp.value = 'pemilik';
+            } else if (myRole === 'partner_public') {
+                opts.innerHTML = `<div class="custom-option selected" onclick="pilihRole('reseller_public', 'Reseller Public')">Reseller Public</div>`;
+                trig.innerText = 'Reseller Public'; roleInp.value = 'reseller_public';
+            }
+        });
+
+        function toggleRoleSelect() { document.getElementById('customRoleOptions').classList.toggle('open'); document.querySelector('.custom-select-trigger').classList.toggle('active'); }
+        function pilihRole(v, t) { document.getElementById('webRole').value = v; document.getElementById('customSelectText').innerText = t; toggleRoleSelect(); }
+
+        function ambilDataWebUsers() {
+            if (!currentUserId || !allowedRoles.includes(myRole)) return;
+            database.ref('users').on('value', (snap) => {
+                let tabel = `<tr><th>Informasi Akun</th><th>Tipe Akun</th><th>Status</th><th>Aksi</th></tr>`;
+                let d = []; snap.forEach(c => { let u = c.val(); if(u && u.username) { u.uId=c.key; if(myRole==='pemilik'||myRole==='demo'||u.maker===myUsername) d.push(u); } });
+                
+                const svgShield = `<svg viewBox="0 0 24 24" style="width:14px; fill:var(--primary);"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>`;
+
+                d.sort((a,b)=>(a.timestamp||0)-(b.timestamp||0)).forEach(u => {
+                    let r = u.role ? String(u.role) : 'reseller_public';
+                    let rBadge = `<span class="role-badge role-${r.split('_')[0]}">${r.replace('_',' ').toUpperCase()}</span>`;
+                    
+                    // 🔥 ATURAN BARU: HANYA USERNAME "admin" YANG TIDAK BISA DIHAPUS 🔥
+                    let hapus = (String(u.username).toLowerCase() === 'admin') ? 
+                                `<span style="color:var(--text-sub); font-size:12px; display:flex; align-items:center; gap:4px;">${svgShield} Admin Utama</span>` : 
+                                `<button class="btn-hapus" onclick="hapusAkunWeb('${u.uId}', '${u.username}')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Hapus</button>`;
+                    
+                    let stat = u.isOnline ? `<span class="status-badge status-online"><span class="status-dot dot-online"></span>Online</span>` : `<span class="status-badge status-offline"><span class="status-dot" style="background:var(--text-sub);"></span>Offline</span>`;
+
+                    tabel += `<tr><td><b style="color:var(--primary); font-size:15px;">${u.username}</b><br><small style="color:var(--text-sub);">Pass: <span style="color:var(--warning);">${u.password||'***'}</span></small></td><td>${rBadge}</td><td>${stat}</td><td>${hapus}</td></tr>`;
+                });
+                document.getElementById('tabelWebUsers').innerHTML = tabel;
+            });
+        }
+
+        function buatAkunWeb() {
+            if(myRole === 'demo') return showPeringatan("<b>MODE DEMO:</b> Tidak bisa membuat akun.");
+            let uName = document.getElementById('webUsername').value.trim(); let pWord = document.getElementById('webPassword').value.trim();
+            if(!uName || !pWord) return showPeringatan("Lengkapi data!");
+            database.ref('users').orderByChild('username').equalTo(uName).once('value', s => {
+                if(s.exists()){ showPeringatan("Username sudah ada."); } 
+                else { database.ref('users').push().set({username:uName, password:pWord, role:document.getElementById('webRole').value, maker:myUsername, isOnline:false, timestamp:Date.now()}).then(() => { munculkanModalWeb(uName, pWord, document.getElementById('webRole').value); }); }
+            });
+        }
+
+        let delId = ""; function hapusAkunWeb(id, n) { 
+            if(myRole === 'demo') return showPeringatan("<b>MODE DEMO:</b> Izin ditolak.");
+            delId = id; document.getElementById('teksKonfirmasi').innerHTML = `Hapus akses <b style="color:var(--danger);">${n}</b>?`; document.getElementById('modalKonfirmasi').style.display = 'flex'; 
+        }
+        function tutupKonfirmasi(){ document.getElementById('modalKonfirmasi').style.display = 'none'; }
+        function eksekusiHapus() { database.ref('users/'+delId).remove().then(() => { tutupKonfirmasi(); document.getElementById('teksInfo').innerHTML = "Terhapus."; document.getElementById('modalInfo').style.display = 'flex'; }); }
+
+        function munculkanModalWeb(u, p, r) { document.getElementById('resUserWeb').innerText = u; document.getElementById('resPassWeb').innerText = p; document.getElementById('resRoleWeb').innerText = r.replace('_',' ').toUpperCase(); document.getElementById('resLinkWeb').innerText = window.location.origin; document.getElementById('resLinkWeb').href = window.location.origin; document.getElementById('modalScreenshot').style.display = 'flex'; }
+        function salinDataWeb() { navigator.clipboard.writeText(`Data Login Panel\nUsername : ${document.getElementById('resUserWeb').innerText}\nPassword : ${document.getElementById('resPassWeb').innerText}\nLink: ${window.location.origin}`).then(() => { document.getElementById('btnSalinWeb').innerHTML = 'Tersalin! <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>'; setTimeout(()=>{ document.getElementById('btnSalinWeb').innerHTML = 'Salin Teks'; }, 2000); }); }
+
+        ambilDataWebUsers();
+    </script>
+</body>
+</html>

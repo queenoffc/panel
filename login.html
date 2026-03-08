@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papa Queen Official - Login Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            /* THEME PURPLE DARKMODE 🔥 */
+            --primary: #8b5cf6; 
+            --primary-hover: #7c3aed; 
+            --danger: #ef4444; 
+            --text-main: #f8fafc; 
+            --text-sub: #94a3b8; 
+            --input-bg: rgba(29, 21, 56, 0.6); 
+            --card-bg: rgba(30, 27, 46, 0.7); 
+            --border-color: rgba(255, 255, 255, 0.1); 
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            color: var(--text-main); 
+            margin: 0; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden; 
+        }
+
+        /* VIDEO BACKGROUND (Struktur ini dipertahankan agar tetap kerender) */
+        .bg-video { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            object-fit: cover; 
+            z-index: -2; 
+        }
+        
+        /* OVERLAY (Dibuat agak gelap kayak semula 🔥) */
+        .bg-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            /* Transparansi dinaikkan jadi 0.8 (80% gelap), warna ungu tua-hitam */
+            background: rgba(15, 12, 28, 0.8); 
+            backdrop-filter: blur(4px); 
+            z-index: -1; 
+        }
+
+        /* KOTAK LOGIN KACA */
+        .login-box {
+            background: var(--card-bg); 
+            backdrop-filter: blur(10px); 
+            padding: 40px 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6); 
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+            z-index: 1;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* LOGO */
+        .login-logo { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; margin: 0 auto 15px auto; display: block; border: 2px solid rgba(139, 92, 246, 0.3); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); background-color: var(--input-bg); }
+        
+        /* NAMA STORE EXTRA BOLD */
+        .login-box h2 { 
+            margin-top: 0; 
+            margin-bottom: 5px; 
+            font-size: 24px; 
+            font-weight: 800; 
+            color: var(--text-main); 
+            letter-spacing: 0.5px; 
+        }
+        
+        .login-box p { color: var(--text-sub); font-size: 13px; margin-bottom: 30px; }
+        
+        .input-group { text-align: left; margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 1px; }
+        .input-group input { width: 100%; padding: 14px 15px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-main); font-size: 14px; box-sizing: border-box; outline: none; transition: 0.2s; }
+        .input-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2); background: rgba(29, 21, 56, 0.9); }
+
+        /* TOMBOL MASUK */
+        .btn-masuk { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 10px; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-masuk:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4); }
+        .btn-masuk svg { width: 18px; height: 18px; fill: currentColor; }
+
+        /* TOMBOL MUSIK */
+        .audio-btn { position: fixed; bottom: 25px; right: 25px; background: var(--card-bg); backdrop-filter: blur(8px); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px 18px; border-radius: 50px; cursor: pointer; z-index: 10; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+        .audio-btn:hover { background: rgba(139, 92, 246, 0.2); border-color: var(--primary); transform: translateY(-2px); }
+        .audio-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+        /* COPYRIGHT */
+        .copyright-capsule { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10; text-align: center; opacity: 0; animation: fadeInUp 0.8s ease-out forwards 0.3s; }
+        .copyright-text { display: inline-block; padding: 8px 20px; background: rgba(15, 12, 28, 0.8); backdrop-filter: blur(8px); border-radius: 50px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.4); color: var(--text-sub); font-size: 12px; letter-spacing: 0.5px; }
+        .copyright-text b { color: var(--primary); font-weight: 700; }
+
+        /* MODAL ERROR */
+        .mini-ai-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; animation: fadeInPop 0.2s ease; }
+        .mini-ai-popup { background: rgba(30, 27, 46, 1); border-radius: 16px; border-top: 5px solid var(--danger); width: 100%; max-width: 320px; padding: 25px; text-align: center; color: #fff; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+        
+        .modal-icon { width: 48px; height: 48px; fill: var(--danger); margin: 0 auto 15px auto; display: block; }
+        .mini-ai-header { font-size: 18px; font-weight: 700; color: var(--danger); margin-bottom: 10px; }
+        .mini-ai-body { font-size: 14px; color: var(--text-main); line-height: 1.5; margin-bottom: 25px; }
+        
+        .mini-ai-btn-close { width: 100%; background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .mini-ai-btn-close:hover { background: var(--danger); color: white; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+        @keyframes fadeInPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        @media (max-width: 480px) {
+            .copyright-capsule { bottom: 85px; width: 80%; }
+            .audio-btn { bottom: 20px; right: 50%; transform: translateX(50%); width: auto; justify-content: center; }
+            .audio-btn:hover { transform: translateX(50%) translateY(-2px); }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop><source src="https://cdn.yupra.my.id/yp/1wl675dd.opus" type="audio/ogg"></audio>
+
+    <div class="copyright-capsule">
+        <div class="copyright-text">
+            Powered By <b>Papa Queen Official</b>
+        </div>
+    </div>
+
+    <button id="audioToggle" class="audio-btn" onclick="toggleAudio()">
+        <svg id="audioIcon" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+        <span id="audioText">Putar Musik</span>
+    </button>
+
+    <video autoplay muted loop playsinline class="bg-video"><source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"></video>
+    <div class="bg-overlay"></div>
+
+    <div class="login-box">
+        <img src="https://files.catbox.moe/b3zmhy.jpg" alt="Logo Papa Queen Official" class="login-logo" onerror="this.src='https://ui-avatars.com/api/?name=Papa+Queen&background=2e1b4c&color=8b5cf6&size=150'">
+        
+        <h2>Queen Web Center</h2>
+        <p>Login untuk mengelola server Pterodactyl</p>
+        
+        <div class="input-group">
+            <label>Username</label>
+            <input type="text" id="username" placeholder="Ketik username..." autocomplete="off" required>
+        </div>
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Ketik password..." required>
+        </div>
+        
+        <button onclick="prosesLogin()" id="btnLogin" class="btn-masuk">
+            Masuk Sekarang 
+            <svg viewBox="0 0 24 24"><path d="M5 13h11.17l-4.88 4.88c-.39.39-.39 1.03 0 1.42.39.39 1.02.39 1.41 0l6.59-6.59c.39-.39.39-1.02 0-1.41l-6.58-6.6a.996.996 0 10-1.41 1.41L16.17 11H5c-.55 0-1 .45-1 1s.45 1 1 1z"/></svg>
+        </button>
+    </div>
+
+    <div id="modalLoginError" class="mini-ai-overlay">
+        <div class="mini-ai-popup">
+            <svg class="modal-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <div class="mini-ai-header">Akses Ditolak</div>
+            <div class="mini-ai-body" id="errorMsgText">Username atau Password salah.</div>
+            <button class="mini-ai-btn-close" onclick="tutupError()">Coba Lagi</button>
+        </div>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        // LOGIKA MUSIK DENGAN SVG
+        let music = document.getElementById("bgMusic"); 
+        let audioBtn = document.getElementById("audioToggle"); 
+        let audioText = document.getElementById("audioText");
+        let audioIcon = document.getElementById("audioIcon");
+        let isPlaying = false;
+        
+        function toggleAudio() { 
+            if (isPlaying) { 
+                music.pause(); 
+                audioText.innerText = "Putar Musik"; 
+                audioIcon.innerHTML = `<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>`;
+                isPlaying = false; 
+            } else { 
+                music.play().then(() => { 
+                    audioText.innerText = "Matikan Musik"; 
+                    audioIcon.innerHTML = `<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>`;
+                    isPlaying = true; 
+                }).catch((error) => { 
+                    tampilkanError("Gagal memutar musik, pastikan volume perangkat menyala."); 
+                }); 
+            } 
+        }
+
+        // KONEKSI FIREBASE
+        const firebaseConfig = { databaseURL: "https://papa-queen-default-rtdb.firebaseio.com" };
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); } 
+        const database = firebase.database();
+        
+        database.ref('users').once('value').then((snapshot) => { 
+            if (!snapshot.exists()) { 
+                database.ref('users/user_001').set({ username: "admin", password: "admin001", role: "pemilik" }); 
+            } 
+        });
+
+        // FUNGSI MODAL ERROR
+        function tampilkanError(pesan) {
+            document.getElementById('errorMsgText').innerText = pesan;
+            document.getElementById('modalLoginError').style.display = 'flex';
+        }
+        function tutupError() {
+            document.getElementById('modalLoginError').style.display = 'none';
+        }
+
+        // JALANKAN DENGAN TOMBOL ENTER
+        document.getElementById('password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') prosesLogin();
+        });
+        document.getElementById('username').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') document.getElementById('password').focus();
+        });
+
+        // LOGIKA PROSES LOGIN
+        function prosesLogin() {
+            let userIn = document.getElementById('username').value.trim(); 
+            let passIn = document.getElementById('password').value.trim(); 
+            let btn = document.getElementById('btnLogin');
+            
+            if (userIn === "" || passIn === "") { 
+                tampilkanError("Tolong isi username dan password kamu ya!"); 
+                return; 
+            }
+            
+            btn.innerHTML = `<svg viewBox="0 0 24 24" style="animation: spin 1s linear infinite;"><path d="M12 4V2C6.48 2 2 6.48 2 12h2c0-4.41 3.59-8 8-8zm0 16c-4.41 0-8-3.59-8-8H2c0 5.52 4.48 10 10 10v-2zM22 12c0-5.52-4.48-10-10-10v2c4.41 0 8 3.59 8 8h-2l3 3 3-3h-2z"/></svg> Mengecek...`; 
+            btn.style.opacity = "0.7"; 
+            btn.style.pointerEvents = "none";
+            
+            database.ref('users').once('value').then((snapshot) => {
+                let users = snapshot.val(); 
+                let loginSukses = false;
+                
+                if (users !== null) { 
+                    for (let id in users) { 
+                        if (users[id].username === userIn && users[id].password === passIn) { 
+                            localStorage.setItem('user_id', id); 
+                            localStorage.setItem('role', users[id].role); 
+                            localStorage.setItem('username', users[id].username); 
+                            loginSukses = true; 
+                            break; 
+                        } 
+                    } 
+                }
+                
+                if (loginSukses) { 
+                    database.ref('activity_logs').push({
+                        username: userIn,
+                        role: localStorage.getItem('role') || 'Unknown',
+                        action: "Melakukan Login ke dalam Panel Papa Queen Official.",
+                        timestamp: Date.now()
+                    }).then(() => {
+                        window.location.replace("index.html"); 
+                    });
+                } else { 
+                    tampilkanError("Username atau password yang dimasukkan salah. Coba periksa lagi."); 
+                    btn.innerHTML = `Masuk Sekarang <svg viewBox="0 0 24 24"><path d="M5 13h11.17l-4.88 4.88c-.39.39-.39 1.03 0 1.42.39.39 1.02.39 1.41 0l6.59-6.59c.39-.39.39-1.02 0-1.41l-6.58-6.6a.996.996 0 10-1.41 1.41L16.17 11H5c-.55 0-1 .45-1 1s.45 1 1 1z"/></svg>`; 
+                    btn.style.opacity = "1"; 
+                    btn.style.pointerEvents = "auto"; 
+                }
+            }).catch((error) => { 
+                tampilkanError("Gagal koneksi ke database. Pastikan internetmu stabil."); 
+                btn.innerHTML = `Masuk Sekarang <svg viewBox="0 0 24 24"><path d="M5 13h11.17l-4.88 4.88c-.39.39-.39 1.03 0 1.42.39.39 1.02.39 1.41 0l6.59-6.59c.39-.39.39-1.02 0-1.41l-6.58-6.6a.996.996 0 10-1.41 1.41L16.17 11H5c-.55 0-1 .45-1 1s.45 1 1 1z"/></svg>`; 
+                btn.style.opacity = "1"; 
+                btn.style.pointerEvents = "auto"; 
+            });
+        }
+    </script>
+</body>
+</html>

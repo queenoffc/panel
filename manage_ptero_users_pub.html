@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papa Queen Official - Kelola User (Public)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --bg-color: #0f0c1c; --card-bg: #1e1b2e; --primary: #8b5cf6; --primary-hover: #7c3aed;
+            --success: #10b981; --danger: #ef4444; --warning: #f59e0b; 
+            --text-main: #f8fafc; --text-sub: #94a3b8; --input-bg: rgba(29, 21, 56, 0.6); --border-color: rgba(255,255,255,0.1); 
+        }
+        body { font-family: 'Inter', sans-serif; padding: 20px; background-color: var(--bg-color); color: var(--text-main); margin: 0; }
+        
+        .btn-back { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 25px; padding: 10px 18px; background: rgba(139, 92, 246, 0.1); color: var(--primary); text-decoration: none; border-radius: 10px; font-size: 14px; font-weight: 600; border: 1px solid rgba(139, 92, 246, 0.3); transition: 0.3s; }
+        .btn-back svg { width: 18px; height: 18px; fill: currentColor; transition: transform 0.3s; flex-shrink: 0; }
+        .btn-back:hover { background: var(--primary); color: white; transform: translateY(-2px); }
+        .btn-back:hover svg { transform: translateX(-4px); }
+        
+        h2 { font-weight: 800; margin-bottom: 5px; color: var(--text-main); border-left: 4px solid var(--primary); padding-left: 12px; display: flex; align-items: center; gap: 10px; font-size: 22px; text-transform: uppercase; }
+        h2 svg { width: 24px; height: 24px; fill: var(--primary); flex-shrink: 0; }
+        .sub-title { color: var(--text-sub); margin-bottom: 25px; font-size: 14px; line-height: 1.5; }
+        
+        .box { background: var(--card-bg); padding: 25px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); overflow-x: auto; }
+        .box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .box-header h3 { margin: 0; font-size: 16px; display: flex; align-items: center; gap: 10px; color: var(--text-main); text-transform: uppercase; font-weight: 700; }
+        .box-header h3 svg { width: 20px; height: 20px; fill: var(--primary); flex-shrink: 0; }
+        
+        label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
+        input { width: 100%; padding: 14px; margin-bottom: 15px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 14px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2); }
+        
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        
+        @media (max-width: 600px) { 
+            .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 5px; } 
+            h2 { font-size: 18px; } 
+            .box-header { flex-direction: column; align-items: stretch; text-align: left; }
+            .box-header h3 { justify-content: flex-start; }
+            .btn-sapu { width: 100%; justify-content: center; }
+        }
+                .custom-select-wrapper { position: relative; user-select: none; margin-bottom: 20px; }
+        .custom-select-trigger { width: 100%; padding: 14px 15px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 14px; box-sizing: border-box; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; font-weight: 500; }
+        .custom-select-trigger svg { width: 16px; height: 16px; fill: var(--text-sub); transition: 0.3s; flex-shrink: 0; }
+        .custom-select-trigger.active svg { transform: rotate(180deg); fill: var(--primary); }
+        .custom-options { position: absolute; display: none; top: calc(100% + 5px); left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--primary); border-radius: 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 99; overflow: hidden; }
+        .custom-options.open { display: block; }
+        .custom-option { padding: 14px 15px; font-size: 14px; color: var(--text-main); cursor: pointer; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+        .custom-option svg { width: 18px; height: 18px; fill: var(--text-sub); flex-shrink: 0; }
+        .custom-option:hover { background: rgba(139, 92, 246, 0.15); color: var(--primary); }
+
+        .btn-tambah { width: 100%; background: linear-gradient(135deg, var(--primary), #d8b4fe); color: white; border: none; cursor: pointer; border-radius: 10px; padding: 15px; font-weight: 700; font-size: 15px; text-transform: uppercase; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4); transition: 0.3s;}
+        .btn-tambah svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
+        
+        .btn-sapu { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); cursor: pointer; border-radius: 8px; padding: 10px 15px; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s;}
+        .btn-sapu svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+        .btn-sapu:hover { background: var(--warning); color: white; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); }
+
+        table { width: 100%; border-collapse: collapse; min-width: 600px; margin-top: 10px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        th { background: rgba(0,0,0,0.2); color: var(--text-sub); font-weight: 700; text-transform: uppercase; font-size: 12px; white-space: nowrap; }
+        
+        .btn-hapus { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); cursor: pointer; border-radius: 8px; padding: 8px 15px; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; transition: 0.3s; }
+        .btn-hapus svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+        .btn-hapus:hover { background: var(--danger); color: white; border-color: var(--danger); }
+        
+        .badge { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; }
+        .badge-admin { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-user { background: rgba(139, 92, 246, 0.15); color: var(--primary); border: 1px solid rgba(139, 92, 246, 0.3); }
+        .reseller-tag { font-size: 11px; color: var(--primary); background: rgba(139, 92, 246, 0.1); padding: 4px 8px; border-radius: 6px; display: inline-block; margin-top: 6px; font-weight: 600;}
+        .search-container { position: relative; margin-bottom: 20px; }
+        .search-container input { padding-left: 45px; margin-bottom: 0; background: rgba(0,0,0,0.2); }
+        .search-container svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; fill: var(--text-sub); }
+
+        /* MODALS AI STYLES */
+        .mini-ai-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 12, 28, 0.85); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+        .mini-ai-popup { background: var(--card-bg); border-radius: 20px; width: 100%; max-width: 420px; padding: 30px; text-align: center; color: var(--text-main); border: 1px solid var(--border-color); }
+        .modal-icon-top { width: 60px; height: 60px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .modal-icon-top svg { width: 30px; height: 30px; flex-shrink: 0; }
+        
+        .mode-danger .modal-icon-top { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); } .mode-danger .modal-icon-top svg { fill: var(--danger); }
+        .mode-success .modal-icon-top { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); } .mode-success .modal-icon-top svg { fill: var(--success); }
+        .mode-warning .modal-icon-top { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); } .mode-warning .modal-icon-top svg { fill: var(--warning); }
+        
+        .mini-ai-header { font-size: 20px; font-weight: 800; margin-bottom: 10px; text-transform: uppercase; }
+        .mini-ai-body { font-size: 14px; color: var(--text-sub); line-height: 1.6; margin-bottom: 25px; }
+        
+        .ai-btn-group { display: flex; gap: 12px; width: 100%; }
+        .mini-ai-btn { flex: 1; border: none; font-weight: 700; font-size: 14px; border-radius: 10px; cursor: pointer; transition: 0.3s; text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; }
+        .mini-ai-btn svg { width: 18px; height: 18px; flex-shrink: 0; fill: currentColor; }
+        
+        .btn-primary-action { background: var(--primary); color: white; } .btn-primary-action:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn-danger-action { background: var(--danger); color: white; } .btn-danger-action:hover { background: #dc2626; transform: translateY(-2px); }
+        .btn-warning-action { background: var(--warning); color: white; } .btn-warning-action:hover { background: #d97706; transform: translateY(-2px); }
+        .btn-outline-action { background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-main); }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="btn-back">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        Kembali ke Dashboard
+    </a>
+    
+    <h2>
+        <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg>
+        Kelola User & Server (Public)
+    </h2>
+    <p class="sub-title">Bikin Akun + Server pelanggan Public langsung dalam 1x proses otomatis.</p>
+
+    <div class="box">
+        <div class="box-header">
+            <h3><svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg> Auto-Create 1 Paket Public</h3>
+        </div>
+        <div class="grid-2">
+            <div><label>Username Panel</label><input type="text" id="newUsername" placeholder="Tanpa spasi..." autocomplete="off"></div>
+            <div><label>Password</label><input type="text" id="newPassword" placeholder="Ketik password..." autocomplete="off"></div>
+        </div>
+        <div class="grid-2">
+            <div><label>Email Aktif</label><input type="email" id="newEmail" placeholder="user@gmail.com" autocomplete="off"></div>
+            <div><label>Nama Server Bot</label><input type="text" id="newServerName" placeholder="Contoh: Bot Public VIP" autocomplete="off"></div>
+        </div>
+        <div class="grid-3">
+            <div><label>RAM (MB)</label><input type="number" id="newRam" value="2000"></div>
+            <div><label>CPU (%)</label><input type="number" id="newCpu" value="60"></div>
+            <div><label>Disk (MB)</label><input type="number" id="newDisk" value="1000"></div>
+        </div>
+        <div class="grid-2" style="display: none;"><input type="number" id="newLocId" value="1"><input type="number" id="newEggId" value="15"></div>
+        
+        <div id="roleContainer">
+            <label>Tipe Akun (Pterodactyl Role)</label>
+            <div class="custom-select-wrapper">
+                <div class="custom-select-trigger" onclick="toggleRoleSelect()">
+                    <span id="customSelectText"><svg viewBox="0 0 24 24" style="width:16px;height:16px;margin-right:8px;fill:currentColor;vertical-align:middle;"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Member Biasa</span>
+                    <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                </div>
+                <div class="custom-options" id="customRoleOptions">
+                    <div class="custom-option selected" onclick="pilihRole('false', 'Member Biasa')"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Member Biasa</div>
+                    <div class="custom-option" onclick="pilihRole('true', 'Admin Panel')"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg> Admin Panel</div>
+                </div>
+            </div>
+            <input type="hidden" id="newRole" value="false">
+        </div>
+        
+        <button class="btn-tambah" onclick="buatSatuPaket()">
+            Bikin 1 Paket Public Sekarang
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+        </button>
+    </div>
+
+    <div class="box">
+        <div class="box-header">
+            <h3>Daftar Pengguna <span id="textDaftar" style="color: var(--primary);"></span></h3>
+            <button class="btn-sapu" id="btnSapu" onclick="konfirmasiSapuAwal()">
+                <svg viewBox="0 0 24 24"><path d="M15 16h4v2h-4zm0-8h7v2h-7zm0 4h6v2h-6zM3 18c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2V8H3v10zM14 5h-3l-1-1H6L5 5H2v2h12V5z"/></svg> Bersihkan Hantu
+            </button>
+        </div>
+        <div class="search-container">
+            <svg viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.57 4.23l4.99 4.99-1.41 1.41-4.99-4.99A6.5 6.5 0 119.5 3m0 2a4.5 4.5 0 100 9 4.5 4.5 0 000-9z"/></svg>
+            <input type="text" id="searchInput" onkeyup="cariDataTabel()" placeholder="Cari user...">
+        </div>
+        <table id="tabelPtero">
+            <tr><th>ID</th><th>Username</th><th>Email</th><th>Status</th><th>Aksi</th></tr>
+            <tr><td colspan="5" style="text-align: center; color: var(--text-sub); padding: 30px;">Mengambil data...</td></tr>
+        </table>
+    </div>
+        <div id="modalScreenshot" class="mini-ai-overlay">
+        <div class="mini-ai-popup mode-success">
+            <div class="modal-icon-top"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+            <h3 class="mini-ai-header" style="color: var(--success);">PUBLIC ACCESS DIBUAT</h3>
+            <p class="mini-ai-body">Proses create berhasil. Berikut data login client Anda:</p>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; text-align: left; margin-bottom: 25px;">
+                <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                    <div style="font-size: 11px; color: var(--text-sub); text-transform: uppercase; font-weight: 700; margin-bottom: 5px;">USERNAME</div>
+                    <div id="resUser" style="font-size: 15px; font-weight: 600; color: var(--text-main);">Memuat...</div>
+                </div>
+                <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                    <div style="font-size: 11px; color: var(--text-sub); text-transform: uppercase; font-weight: 700; margin-bottom: 5px;">PASSWORD</div>
+                    <div id="resPass" style="font-size: 15px; font-weight: 600; color: var(--warning);">Memuat...</div>
+                </div>
+                <div>
+                    <div style="font-size: 11px; color: var(--text-sub); text-transform: uppercase; font-weight: 700; margin-bottom: 5px;">NAMA SERVER</div>
+                    <div id="resServer" style="font-size: 15px; font-weight: 600; color: var(--primary);">Memuat...</div>
+                </div>
+            </div>
+            
+            <div class="ai-btn-group">
+                <button class="mini-ai-btn btn-primary-action" id="btnSalin" onclick="salinDataBuyer()">
+                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Salin Teks
+                </button>
+                <button class="mini-ai-btn btn-outline-action" onclick="tutupModal('modalScreenshot')">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalHapusConfirm" class="mini-ai-overlay"><div class="mini-ai-popup mode-danger"><div class="modal-icon-top"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div><div class="mini-ai-header" style="color: var(--danger);">HAPUS USER</div><div class="mini-ai-body">Yakin hapus <b id="delUsername"></b> beserta semua servernya?</div><div class="ai-btn-group"><button class="mini-ai-btn btn-danger-action" id="btnHapusFix" onclick="prosesHapusUser()">Ya, Hapus!</button><button class="mini-ai-btn btn-outline-action" onclick="tutupModal('modalHapusConfirm')">Batal</button></div></div></div>
+    <div id="modalSapuConfirm" class="mini-ai-overlay"><div class="mini-ai-popup mode-warning"><div class="modal-icon-top"><svg viewBox="0 0 24 24"><path d="M15 16h4v2h-4zm0-8h7v2h-7zm0 4h6v2h-6zM3 18c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2V8H3v10zM14 5h-3l-1-1H6L5 5H2v2h12V5z"/></svg></div><div class="mini-ai-header" style="color: var(--warning);">SAPU BERSIH</div><div class="mini-ai-body" id="sapuConfirmBody"></div><div class="ai-btn-group"><button id="btnEksekusiSapu" class="mini-ai-btn btn-warning-action" onclick="eksekusiSapuBersih()">Lanjutkan</button><button class="mini-ai-btn btn-outline-action" onclick="tutupModal('modalSapuConfirm')">Batal</button></div></div></div>
+    <div id="modalAiAlert" class="mini-ai-overlay"><div class="mini-ai-popup"><div class="modal-icon-top" id="aiAlertIcon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div><div class="mini-ai-header" id="aiAlertTitle">PERHATIAN</div><div class="mini-ai-body" id="aiAlertBody"></div><div class="ai-btn-group"><button class="mini-ai-btn btn-primary-action" id="aiAlertBtn" onclick="tutupModal('modalAiAlert')">Oke</button></div></div></div>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        const currentUserId = localStorage.getItem('user_id');
+        const role = localStorage.getItem('role') || '';
+        const myUsername = localStorage.getItem('username') || 'Unknown'; 
+        const allowedRoles = ['pemilik', 'reseller_public', 'partner_public', 'demo'];
+
+        if (!currentUserId || !allowedRoles.includes(role)) window.location.replace("index.html");
+
+        if (role === 'pemilik' || role === 'partner_public') {
+            document.getElementById('roleContainer').style.display = 'block';
+            document.getElementById('textDaftar').innerText = role === 'pemilik' ? "(Semua Reseller)" : "(Tim Kamu)";
+        } else if (role === 'demo') {
+            document.getElementById('roleContainer').style.display = 'block'; 
+            document.getElementById('textDaftar').innerText = "(Akun Demo)";
+        } else {
+            document.getElementById('roleContainer').style.display = 'none';
+            document.getElementById('textDaftar').innerText = "Buatanmu";
+        }
+
+        const firebaseConfig = { databaseURL: "https://papa-queen-default-rtdb.firebaseio.com/" };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        if (currentUserId) { database.ref('users/' + currentUserId + '/isOnline').set(true); database.ref('users/' + currentUserId + '/isOnline').onDisconnect().set(false); }
+
+        const WORKER_URL = "https://papaqueen.ubiitu48.workers.dev"; 
+        const PTERO_DOMAIN = "papa-queen-default-rtdb.firebaseio.com/"; // Tempel Link Tanpa https:// 
+        // contoh : domainpanelptero.com
+        const PTERO_API = "ptla_KVn9mg3jd4RZhUfIeWL9iLmfeinhiSvWP3zTKKAifaO"; // Tempel plta_jwjd........
+
+        function tutupModal(id) { document.getElementById(id).style.display = 'none'; }
+        function showAiAlert(p, j="PERHATIAN", isSuccess=false) { 
+            document.getElementById('aiAlertTitle').innerText=j; document.getElementById('aiAlertBody').innerHTML=p; 
+            let popup = document.querySelector('#modalAiAlert .mini-ai-popup'); let icon = document.getElementById('aiAlertIcon'); let btn = document.getElementById('aiAlertBtn');
+            if(isSuccess) { popup.className = 'mini-ai-popup mode-success'; icon.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`; btn.style.background = 'var(--success)'; } 
+            else { popup.className = 'mini-ai-popup mode-warning'; icon.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`; btn.style.background = 'var(--warning)'; }
+            document.getElementById('modalAiAlert').style.display='flex'; 
+        }
+
+        function toggleRoleSelect() { document.getElementById('customRoleOptions').classList.toggle('open'); document.querySelector('.custom-select-trigger').classList.toggle('active'); }
+        function pilihRole(v, t) { document.getElementById('newRole').value=v; document.getElementById('customSelectText').innerHTML=`<svg viewBox="0 0 24 24" style="width:16px;height:16px;margin-right:8px;fill:currentColor;vertical-align:middle;"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`+t; toggleRoleSelect(); }
+        const spinnerSvg = `<svg viewBox="0 0 24 24" style="animation: spin 1s linear infinite; width:18px; fill:currentColor; flex-shrink:0;"><path d="M12 4V2C6.48 2 2 6.48 2 12h2c0-4.41 3.59-8 8-8zm0 16c-4.41 0-8-3.59-8-8H2c0 5.52 4.48 10 10 10v-2zM22 12c0-5.52-4.48-10-10-10v2c4.41 0 8 3.59 8 8h-2l3 3 3-3h-2z"/></svg>`;
+
+        function ambilDataPtero() {
+            fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/users?per_page=1000`, { headers: { 'Authorization': `Bearer ${PTERO_API}`, 'Accept': 'application/json' } }).then(res => res.json()).then(data => {
+                let tabel = `<tr><th>ID</th><th>Username</th><th>Email</th><th>Status</th><th>Aksi</th></tr>`;
+                data.data.forEach(user => {
+                    let u = user.attributes;
+                    if (role !== 'pemilik' && role !== 'demo' && u.last_name !== myUsername) return;
+                    let badge = u.root_admin ? '<span class="badge badge-admin">Admin</span>' : '<span class="badge badge-user">Member</span>';
+                    tabel += `<tr><td>#${u.id}</td><td><b>${u.username}</b></td><td>${u.email}</td><td>${badge}</td><td><button class="btn-hapus" onclick="munculkanModalHapusConfirm(${u.id}, '${u.username}')"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Hapus</button></td></tr>`;
+                }); document.getElementById('tabelPtero').innerHTML = tabel;
+            }).catch(e => { document.getElementById('tabelPtero').innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger); padding: 30px;"><b>KONEKSI GAGAL!</b><br>Pastikan Worker Aktif.</td></tr>`; });
+        }
+
+        async function buatSatuPaket() {
+            if (role === 'demo') return showAiAlert("Mode Demo tidak diizinkan.");
+            let u = document.getElementById('newUsername').value.trim(); let p = document.getElementById('newPassword').value.trim(); let e = document.getElementById('newEmail').value.trim(); let s = document.getElementById('newServerName').value.trim();
+            if(!u || !p || !e || !s) return showAiAlert("Lengkapi data!");
+
+            let btn = document.querySelector('.btn-tambah'); let originalText = btn.innerHTML; btn.style.pointerEvents = "none";
+            try {
+                btn.innerHTML = `${spinnerSvg} 1/2: Membuat Akun User...`;
+                let resUser = await fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/users`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${PTERO_API}`, 'Accept': 'application/json' }, body: JSON.stringify({ "email": e, "username": u, "first_name": u, "last_name": myUsername, "password": p, "root_admin": document.getElementById('newRole').value === "true" }) });
+                if(!resUser.ok) throw new Error("User sudah ada / Data tidak valid.");
+                let dataUser = await resUser.json(); let uid = dataUser.attributes.id;
+
+                btn.innerHTML = `${spinnerSvg} 2/2: Create Server Public...`;
+                let resServer = await fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/servers`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${PTERO_API}`, 'Accept': 'application/json' }, body: JSON.stringify({ "name": s, "user": uid, "egg": 15, "docker_image": "ghcr.io/parkervcp/yolks:nodejs_24", "startup": "npm start", "environment": { "INST": "npm", "USER_UPLOAD": "0", "AUTO_UPDATE": "0", "CMD_RUN": "npm start" }, "limits": { "memory": parseInt(document.getElementById('newRam').value), "swap": 0, "disk": parseInt(document.getElementById('newDisk').value), "io": 500, "cpu": parseInt(document.getElementById('newCpu').value) }, "feature_limits": { "databases": 5, "backups": 5, "allocations": 5 }, "created": { "locations": [1], "dedicated_ip": false, "port_range": [] } }) });
+                if(!resServer.ok) throw new Error("Gagal created Server.");
+
+                btn.innerHTML = originalText; btn.style.pointerEvents = "auto";
+                document.getElementById('resUser').innerText=u; document.getElementById('resPass').innerText=p; document.getElementById('resServer').innerText=s;
+                document.getElementById('modalScreenshot').style.display='flex'; ambilDataPtero();
+            } catch(err) { btn.innerHTML = originalText; btn.style.pointerEvents = "auto"; showAiAlert("Error: " + err.message); }
+        }
+
+        let targetHantu = [];
+        function konfirmasiSapuAwal() { document.getElementById('sapuConfirmBody').innerHTML = "MENGHAPUS semua User yang sudah tidak memiliki Server aktif.<br><br>Lanjutkan pemindaian?"; let btnExec = document.getElementById('btnEksekusiSapu'); btnExec.innerHTML = `Pindai Data`; btnExec.onclick = prosesPindaiHantu; document.getElementById('modalSapuConfirm').style.display = 'flex'; }
+        async function prosesPindaiHantu() {
+            tutupModal('modalSapuConfirm'); let btn = document.getElementById('btnSapu'); let oriText = btn.innerHTML; btn.innerHTML = `${spinnerSvg} Memindai...`; btn.style.pointerEvents = "none";
+            try {
+                let resSrv = await fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/servers?per_page=1000`, { headers: { 'Authorization': `Bearer ${PTERO_API}`, 'Accept': 'application/json' } }); let serverOwners = (await resSrv.json()).data.map(s => s.attributes.user);
+                let resUsr = await fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/users?per_page=1000`, { headers: { 'Authorization': `Bearer ${PTERO_API}`, 'Accept': 'application/json' } }); let dataUsers = await resUsr.json();
+                targetHantu = []; dataUsers.data.forEach(user => { let u = user.attributes; if (u.root_admin || u.id === 1) return; if (role !== 'pemilik' && u.last_name !== myUsername) return; if (!serverOwners.includes(u.id)) targetHantu.push(u); });
+                btn.innerHTML = oriText; btn.style.pointerEvents = "auto";
+                if (targetHantu.length === 0) return showAiAlert("Tidak ada 'User Hantu' di daftar kamu.", "✨ PANEL BERSIH!", true);
+                document.getElementById('sapuConfirmBody').innerHTML = `Ditemukan <b style="color:var(--danger);">${targetHantu.length} USER HANTU!</b><br><br>Lanjutkan eksekusi?`; let btnExec = document.getElementById('btnEksekusiSapu'); btnExec.innerHTML = `Ya, Eksekusi!`; btnExec.onclick = eksekusiHapusHantu; document.getElementById('modalSapuConfirm').style.display = 'flex';
+            } catch (e) { btn.innerHTML = oriText; btn.style.pointerEvents = "auto"; showAiAlert("Gagal memindai."); }
+        }
+        async function eksekusiHapusHantu() { tutupModal('modalSapuConfirm'); let btn = document.getElementById('btnSapu'); let ori = btn.innerHTML; btn.innerHTML = `${spinnerSvg} Menghapus...`; btn.style.pointerEvents = "none"; try { for (let u of targetHantu) { await fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/users/${u.id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${PTERO_API}` } }); } showAiAlert(`${targetHantu.length} User Hantu dimusnahkan.`, "CLEAR!", true); ambilDataPtero(); } catch (e) {} btn.innerHTML = ori; btn.style.pointerEvents = "auto"; }
+
+        function salinDataBuyer() {
+            let user = document.getElementById('resUser').innerText; let pass = document.getElementById('resPass').innerText; let server = document.getElementById('resServer').innerText;
+            let teksSalin = `*PAPA QUEEN - DETAIL PUBLIC ACCESS*\n\n-----------------------------\n| *Username:* ${user}\n| *Password:* ${pass}\n| *Server:* ${server}\n| *Link:* https://${PTERO_DOMAIN}\n-----------------------------\n\n_Teks disalin otomatis._`;
+            navigator.clipboard.writeText(teksSalin).then(() => {
+                let btn = document.getElementById('btnSalin'); let iconCopy = `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Salin Teks`;
+                btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Tersalin!`; btn.style.background = "var(--success)"; setTimeout(() => { btn.innerHTML = iconCopy; btn.style.background = "var(--primary)"; }, 2000);
+            });
+        }
+        
+        let delId; function munculkanModalHapusConfirm(id, n) { delId = id; document.getElementById('delUsername').innerText = n; document.getElementById('modalHapusConfirm').style.display = 'flex'; }
+
+        // 🔥 FIX LOGIKA HAPUS USER (MENGGUNAKAN SMART RETRY & JEDA LAMA) 🔥
+        async function prosesHapusUser() { 
+            let btn = document.getElementById('btnHapusFix'); let ori = btn.innerHTML; btn.innerHTML = `${spinnerSvg} Menghapus Server...`; btn.style.pointerEvents = 'none';
+            try { 
+                let resSrv = await fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/servers?per_page=1000`, { headers: { 'Authorization': `Bearer ${PTERO_API}`, 'Accept': 'application/json' } });
+                let dataSrv = await resSrv.json(); let serverUser = dataSrv.data.filter(s => s.attributes.user === delId); let countSrv = serverUser.length;
+                
+                for(let s of serverUser) { await fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/servers/${s.attributes.id}/force`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${PTERO_API}`, 'Accept': 'application/json' } }); }
+                
+                let isDeleted = false;
+                for(let i=0; i<5; i++) {
+                    if(countSrv > 0) { btn.innerHTML = `${spinnerSvg} Hapus Data Node (${5-i})...`; await new Promise(r => setTimeout(r, 4000)); } // Jeda 4 detik setiap percobaan
+                    let resUsr = await fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/users/${delId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${PTERO_API}`, 'Accept': 'application/json' } });
+                    if(resUsr.ok || resUsr.status === 404) { isDeleted = true; break; }
+                }
+                
+                if(!isDeleted) throw new Error("Gagal menghapus! Pterodactyl menahan User ini karena file Server masih belum bersih terhapus dari Node.");
+                
+                btn.innerHTML = ori; btn.style.pointerEvents = 'auto'; tutupModal('modalHapusConfirm'); showAiAlert(`User dan ${countSrv} Servernya telah musnah.`, "DUAARR!! MUSNAH!", true); ambilDataPtero(); 
+            } catch(e) { btn.innerHTML = ori; btn.style.pointerEvents = 'auto'; tutupModal('modalHapusConfirm'); showAiAlert(e.message); } 
+        }
+
+        ambilDataPtero();
+    </script>
+</body>
+</html>

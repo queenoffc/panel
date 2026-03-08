@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papa Queen Official - Kelola Server (Public)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>
+        :root { 
+            --bg-color: #0f0c1c; --card-bg: #1e1b2e; --primary: #8b5cf6; --primary-hover: #7c3aed;
+            --success: #10b981; --danger: #ef4444; --warning: #f59e0b; 
+            --text-main: #f8fafc; --text-sub: #94a3b8; --input-bg: rgba(29, 21, 56, 0.6); --border-color: rgba(255,255,255,0.1); 
+        }
+        body { font-family: 'Inter', sans-serif; padding: 20px; background-color: var(--bg-color); color: var(--text-main); margin: 0; }
+        
+        /* 🔥 FIX SVG: KUNCI UKURAN SECARA SPESIFIK AGAR TIDAK JADI RAKSASA 🔥 */
+        svg { max-width: 100%; height: auto; }
+        .btn-back svg { width: 18px; height: 18px; flex-shrink: 0; }
+        h2 svg { width: 24px; height: 24px; flex-shrink: 0; }
+        .box-header h3 svg { width: 20px; height: 20px; flex-shrink: 0; margin-right: 5px; }
+        .btn-tambah svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .btn-sapu svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .btn-hapus svg { width: 16px; height: 16px; flex-shrink: 0; }
+        .btn-action-small svg { width: 16px; height: 16px; flex-shrink: 0; }
+        .search-container svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .custom-select-trigger svg, .custom-option svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .modal-icon-top svg { width: 30px; height: 30px; flex-shrink: 0; }
+        .mini-ai-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .detail-label svg { width: 14px; height: 14px; flex-shrink: 0; }
+        .badge svg { width: 14px; height: 14px; flex-shrink: 0; margin-right: 4px; }
+
+        /* TOMBOL KEMBALI */
+        .btn-back { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 25px; padding: 10px 18px; background: rgba(139, 92, 246, 0.1); color: var(--primary); text-decoration: none; border-radius: 10px; font-size: 14px; font-weight: 600; border: 1px solid rgba(139, 92, 246, 0.3); transition: 0.3s; }
+        .btn-back:hover { background: var(--primary); color: white; transform: translateY(-2px); }
+        .btn-back:hover svg { transform: translateX(-4px); }
+        
+        /* HEADER & LAYOUT */
+        h2 { font-weight: 800; margin-bottom: 5px; color: var(--text-main); border-left: 4px solid var(--primary); padding-left: 12px; display: flex; align-items: center; gap: 10px; font-size: 22px; text-transform: uppercase; }
+        .sub-title { color: var(--text-sub); margin-bottom: 25px; font-size: 14px; line-height: 1.5; }
+        
+        .box { background: var(--card-bg); padding: 25px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); overflow-x: auto; }
+        .box-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+        .box-header h3 { margin: 0; font-size: 16px; display: flex; align-items: center; color: var(--text-main); text-transform: uppercase; font-weight: 700; }
+        
+        /* INPUT FORM */
+        label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
+        input, select { width: 100%; padding: 14px; margin-bottom: 15px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 14px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2); }
+        
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        
+        /* CUSTOM DROPDOWN */
+        .custom-select-wrapper { position: relative; user-select: none; margin-bottom: 20px; }
+        .custom-select-trigger { width: 100%; padding: 14px 15px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 14px; box-sizing: border-box; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; font-weight: 500; }
+        .custom-select-trigger.active svg:last-child { transform: rotate(180deg); fill: var(--primary); }
+        .custom-options { position: absolute; display: none; top: calc(100% + 5px); left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--primary); border-radius: 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 99; overflow: hidden; }
+        .custom-options.open { display: block; }
+        .custom-option { padding: 14px 15px; font-size: 14px; color: var(--text-main); cursor: pointer; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+        .custom-option:hover { background: rgba(139, 92, 246, 0.15); color: var(--primary); }
+
+        /* TOMBOL UTAMA */
+        .btn-tambah { width: 100%; background: linear-gradient(135deg, var(--primary), #d8b4fe); color: white; border: none; cursor: pointer; border-radius: 10px; padding: 15px; font-weight: 700; font-size: 15px; text-transform: uppercase; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-tambah:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(139, 92, 246, 0.6); }
+        
+        .btn-sapu { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); cursor: pointer; border-radius: 8px; padding: 10px 15px; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; }
+        .btn-sapu:hover { background: var(--warning); color: white; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); }
+
+        /* TABEL & BADGE */
+        table { width: 100%; border-collapse: collapse; min-width: 600px; margin-top: 10px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        th { background: rgba(0,0,0,0.2); color: var(--text-sub); font-weight: 700; text-transform: uppercase; font-size: 12px; white-space: nowrap; }
+        tr:hover { background: rgba(139, 92, 246, 0.05); }
+        
+        .action-group { display: flex; gap: 8px; align-items: center; }
+        .btn-action-small { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; border: none; cursor: pointer; transition: 0.3s; }
+        .btn-hapus { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); cursor: pointer; border-radius: 8px; padding: 8px 15px; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; transition: 0.3s; }
+        .btn-hapus:hover { background: var(--danger); color: white; }
+        .btn-suspend { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); } .btn-suspend:hover { background: var(--warning); color: white; }
+        .btn-unsuspend { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); } .btn-unsuspend:hover { background: var(--success); color: white; }
+        
+        .badge { padding: 6px 12px; border-radius: 50px; font-size: 11px; font-weight: 700; text-transform: uppercase; display: inline-flex; align-items: center; white-space: nowrap; border: 1px solid transparent; }
+        .badge-admin { background: rgba(245, 158, 11, 0.15); color: var(--warning); border-color: rgba(245, 158, 11, 0.3); }
+        .badge-user { background: rgba(139, 92, 246, 0.15); color: var(--primary); border-color: rgba(139, 92, 246, 0.3); }
+        .badge-install { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.3); }
+        .badge-active { background: rgba(16, 185, 129, 0.1); color: var(--success); border-color: rgba(16, 185, 129, 0.3); }
+        .badge-suspended { background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: rgba(239, 68, 68, 0.3); }
+        
+        .status-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+        .dot-warning { background-color: var(--warning); box-shadow: 0 0 8px var(--warning); }
+        .dot-success { background-color: var(--success); box-shadow: 0 0 8px var(--success); }
+        .dot-danger { background-color: var(--danger); box-shadow: 0 0 8px var(--danger); }
+        
+        .reseller-tag { font-size: 11px; color: var(--primary); background: rgba(139, 92, 246, 0.1); padding: 4px 8px; border-radius: 6px; display: inline-block; margin-top: 6px; font-weight: 600;}
+        
+        .search-container { position: relative; margin-bottom: 20px; }
+        .search-container input { padding-left: 45px; margin-bottom: 0; background: rgba(0,0,0,0.2); }
+        .search-container svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); }
+
+        /* MODALS AI STYLES */
+        .mini-ai-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 12, 28, 0.85); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+        .mini-ai-popup { background: var(--card-bg); border-radius: 20px; width: 100%; max-width: 420px; padding: 30px; text-align: center; color: var(--text-main); border: 1px solid var(--border-color); }
+        .modal-icon-top { width: 60px; height: 60px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        
+        .mode-danger .modal-icon-top { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); } .mode-danger .modal-icon-top svg { fill: var(--danger); }
+        .mode-success .modal-icon-top { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); } .mode-success .modal-icon-top svg { fill: var(--success); }
+        .mode-warning .modal-icon-top { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); } .mode-warning .modal-icon-top svg { fill: var(--warning); }
+        
+        .mini-ai-header { font-size: 20px; font-weight: 800; margin-bottom: 10px; text-transform: uppercase; }
+        .mini-ai-body { font-size: 14px; color: var(--text-sub); line-height: 1.6; margin-bottom: 25px; }
+        
+        .ai-btn-group { display: flex; gap: 12px; width: 100%; }
+        .mini-ai-btn { flex: 1; border: none; font-weight: 700; font-size: 14px; border-radius: 10px; cursor: pointer; transition: 0.3s; text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; }
+        
+        .btn-primary-action { background: var(--primary); color: white; } .btn-primary-action:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn-danger-action { background: var(--danger); color: white; } .btn-danger-action:hover { background: #dc2626; transform: translateY(-2px); }
+        .btn-warning-action { background: var(--warning); color: white; } .btn-warning-action:hover { background: #d97706; transform: translateY(-2px); }
+        .btn-success-action { background: var(--success); color: white; } .btn-success-action:hover { background: #059669; transform: translateY(-2px); }
+        .btn-outline-action { background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-main); }
+        
+        .info-detail-ai { background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; text-align: left; margin-bottom: 25px; }
+        .detail-row { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+        .detail-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+        /* FIX UNTUK HP BIAR GAK NABRAK */
+        @media (max-width: 600px) { 
+            .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 5px; } 
+            h2 { font-size: 18px; } 
+            .box-header { flex-direction: column; align-items: flex-start; text-align: left; }
+            .btn-sapu { width: 100%; justify-content: center; }
+        }
+    </style>
+
+</head>
+<body>
+    <a href="index.html" class="btn-back">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        Kembali ke Dashboard
+    </a>
+    
+    <h2>
+        <svg viewBox="0 0 24 24"><path d="M4 5v4h16V5H4zm0 14h16v-4H4v4zm0-7h16v-4H4v4z"/></svg>
+        Kelola Server (Public)
+    </h2>
+    <p class="sub-title">Tambah dan kelola server baru untuk pengguna yang sudah ada di Divisi Public.</p>
+
+    <div class="box">
+        <div class="box-header">
+            <h3><svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg> Create Server Baru</h3>
+        </div>
+        
+        <div><label>Pilih Pemilik Server (User):</label>
+            <select id="userSelect"><option value="">⏳ Memuat daftar user...</option></select>
+        </div>
+        
+        <div><label>Nama Server:</label><input type="text" id="serverName" placeholder="Contoh: Bot Public VIP" autocomplete="off"></div>
+        
+        <div class="grid-3">
+            <div><label>RAM (MB):</label><input type="number" id="serverRam" value="2000"></div>
+            <div><label>CPU (%):</label><input type="number" id="serverCpu" value="60"></div>
+            <div><label>Disk (MB):</label><input type="number" id="serverDisk" value="1000"></div>
+        </div>
+
+        <div class="grid-2" style="display: none;">
+            <input type="number" id="locId" value="1">
+            <input type="number" id="eggId" value="15">
+        </div>
+
+        <button class="btn-tambah" onclick="buatServer()">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+            Create Server Sekarang
+        </button>
+    </div>
+
+    <div class="box">
+        <div class="box-header">
+            <h3><svg viewBox="0 0 24 24"><path d="M4 5v4h16V5H4zm0 14h16v-4H4v4zm0-7h16v-4H4v4z"/></svg> Daftar Server Public <span id="textDaftar"></span></h3>
+        </div>
+        <div class="search-container">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" id="searchInput" onkeyup="cariDataTabel()" placeholder="Cari nama server, user, atau ID..." autocomplete="off">
+        </div>
+        <table id="tabelServer">
+            <tr><th>ID</th><th>Nama Server</th><th>Pemilik</th><th>Status</th><th>Aksi</th></tr>
+            <tr><td colspan="5" style="text-align: center; color: var(--text-sub); padding: 30px;">Mengambil data server...</td></tr>
+        </table>
+    </div>
+        <div id="modalScreenshot" class="mini-ai-overlay">
+        <div class="mini-ai-popup mode-success">
+            <div class="modal-icon-top"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+            <h3 class="mini-ai-header" style="color: var(--success);">SERVER CREATED</h3>
+            <p class="mini-ai-body">Server berhasil dibuat! Silakan kirim informasi ini ke pelanggan.</p>
+            
+            <div style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; text-align: left; margin-bottom: 25px;">
+                <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                    <div style="font-size: 11px; color: var(--text-sub); text-transform: uppercase; font-weight: 700; margin-bottom: 5px;">NAMA SERVER</div>
+                    <div id="resServerName" style="font-size: 15px; font-weight: 600; color: var(--text-main);">Memuat...</div>
+                </div>
+                <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                    <div style="font-size: 11px; color: var(--text-sub); text-transform: uppercase; font-weight: 700; margin-bottom: 5px;">PEMILIK (OWNER)</div>
+                    <div id="resServerOwner" style="font-size: 15px; font-weight: 600; color: var(--warning);">Memuat...</div>
+                </div>
+                <div>
+                    <div style="font-size: 11px; color: var(--text-sub); text-transform: uppercase; font-weight: 700; margin-bottom: 5px;">LINK LOGIN PANEL</div>
+                    <div id="resLink" style="font-size: 15px; font-weight: 600; color: var(--primary);">Memuat...</div>
+                </div>
+            </div>
+            
+            <div class="ai-btn-group">
+                <button class="mini-ai-btn btn-primary-action" id="btnSalin" onclick="salinDataServer()">
+                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Salin Teks
+                </button>
+                <button class="mini-ai-btn btn-outline-action" onclick="tutupModal('modalScreenshot')">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalHapusConfirm" class="mini-ai-overlay"><div class="mini-ai-popup mode-danger"><div class="modal-icon-top"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div><div class="mini-ai-header" style="color: var(--danger);">HAPUS SERVER?</div><div class="mini-ai-body">Yakin ingin menghapus server <b style="color: var(--danger);" id="delServerName"></b>?<br><br>Tindakan ini permanen dan data server akan hancur selamanya!</div><div class="ai-btn-group"><button id="btnKonfirmasiHapus" class="mini-ai-btn btn-danger-action" onclick="prosesHapusServer()">Ya, Hapus!</button><button class="mini-ai-btn btn-outline-action" onclick="tutupModal('modalHapusConfirm')">Batal</button></div></div></div>
+
+    <div id="modalSuspendConfirm" class="mini-ai-overlay"><div class="mini-ai-popup mode-warning"><div class="modal-icon-top"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z"/></svg></div><div class="mini-ai-header" style="color: var(--warning);">BEKUKAN SERVER?</div><div class="mini-ai-body">Yakin ingin membekukan (Suspend) server <b style="color: var(--warning);" id="suspendServerName"></b>?<br><br>Pelanggan tidak akan bisa menyalakan servernya.</div><div class="ai-btn-group"><button id="btnKonfirmasiSuspend" class="mini-ai-btn btn-warning-action" onclick="prosesSuspendServer()">Ya, Bekukan</button><button class="mini-ai-btn btn-outline-action" onclick="tutupModal('modalSuspendConfirm')">Batal</button></div></div></div>
+
+    <div id="modalUnsuspendConfirm" class="mini-ai-overlay"><div class="mini-ai-popup mode-success"><div class="modal-icon-top"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg></div><div class="mini-ai-header" style="color: var(--success);">BUKA BEKU SERVER?</div><div class="mini-ai-body">Yakin ingin membuka status beku (Unsuspend) server <b style="color: var(--success);" id="unsuspendServerName"></b>?<br><br>Server akan kembali normal.</div><div class="ai-btn-group"><button id="btnKonfirmasiUnsuspend" class="mini-ai-btn btn-success-action" onclick="prosesUnsuspendServer()">Buka Akses</button><button class="mini-ai-btn btn-outline-action" onclick="tutupModal('modalUnsuspendConfirm')">Batal</button></div></div></div>
+
+    <div id="modalAiAlert" class="mini-ai-overlay"><div class="mini-ai-popup"><div class="modal-icon-top" id="aiAlertIcon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div><div class="mini-ai-header" id="aiAlertTitle">PERHATIAN</div><div class="mini-ai-body" id="aiAlertBody"></div><div class="ai-btn-group"><button class="mini-ai-btn btn-primary-action" id="aiAlertBtn" onclick="tutupModal('modalAiAlert')">Oke</button></div></div></div>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        const currentUserId = localStorage.getItem('user_id');
+        const role = localStorage.getItem('role') || '';
+        const myUsername = localStorage.getItem('username') || 'Unknown'; 
+        
+        const allowedRoles = ['pemilik', 'reseller_public', 'partner_public', 'demo'];
+        if (!currentUserId || !allowedRoles.includes(role)) { window.location.replace("index.html"); }
+        if (role === 'pemilik' || role === 'demo' || role === 'partner_public') { document.getElementById('textDaftar').innerText = role === 'demo' ? "(Akun Demo)" : (role === 'partner_public' ? "(Tim Kamu)" : "(Semua Reseller)"); } else { document.getElementById('textDaftar').innerText = "Buatanmu"; }
+
+        const firebaseConfig = { databaseURL: "https://papa-queen-default-rtdb.firebaseio.com/" };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        if (currentUserId) { database.ref('users/' + currentUserId + '/isOnline').set(true); database.ref('users/' + currentUserId + '/isOnline').onDisconnect().set(false); }
+
+        const PTERO_DOMAIN = "heii.papaqueen.web.id"; // Tempel Link Tanpa https:// 
+        // contoh : domainpanelptero.com
+        const PTERO_API = "ptla_KVn9mg3jd4RZhUfIeWL9iLmfeinhiSvWP3zTKKAifaO"; // Tempel plta_jwjd........
+        const WORKER_URL = "https://papaqueen.ubiitu48.workers.dev"; 
+
+        const spinnerSvg = `<svg viewBox="0 0 24 24" style="animation: spin 1s linear infinite; width:18px; height:18px; fill:currentColor; flex-shrink:0;"><path d="M12 4V2C6.48 2 2 6.48 2 12h2c0-4.41 3.59-8 8-8zm0 16c-4.41 0-8-3.59-8-8H2c0 5.52 4.48 10 10 10v-2zM22 12c0-5.52-4.48-10-10-10v2c4.41 0 8 3.59 8 8h-2l3 3 3-3h-2z"/></svg>`;
+
+        function tutupModal(id) { document.getElementById(id).style.display = 'none'; }
+        function showAiAlert(p, j = "PERHATIAN", isSuccess = false) {
+            document.getElementById('aiAlertTitle').innerText = j; document.getElementById('aiAlertBody').innerHTML = p;
+            let popup = document.querySelector('#modalAiAlert .mini-ai-popup'); let icon = document.getElementById('aiAlertIcon'); let btn = document.getElementById('aiAlertBtn');
+            if(isSuccess) { popup.className = "mini-ai-popup mode-success"; icon.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`; btn.style.background = "var(--success)"; } 
+            else { popup.className = "mini-ai-popup mode-warning"; icon.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`; btn.style.background = "var(--warning)"; }
+            document.getElementById('modalAiAlert').style.display = 'flex';
+        }
+
+        let usersMap = {}; 
+        function ambilDataUsers() {
+            fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/users?per_page=1000`, { headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${PTERO_API}` } }).then(res => res.json()).then(data => {
+                let select = document.getElementById('userSelect'); select.innerHTML = '<option value="">-- Pilih User --</option>';
+                data.data.forEach(user => {
+                    let u = user.attributes; let pembuat = (u.last_name === 'User' || u.last_name === 'Admin') ? 'admin' : u.last_name;
+                    if (u.id === 1) pembuat = 'Sistem Pusat';
+                    usersMap[u.id] = { username: u.username, maker: pembuat }; let show = false;
+                    if (role === 'pemilik' || role === 'demo' || role === 'partner_public') show = true; else if (u.last_name === myUsername) show = true;
+                    if (role === 'demo' && u.last_name !== 'admin' && u.last_name !== 'Admin' && u.last_name !== 'Sistem Pusat') show = false;
+                    if (show) select.innerHTML += `<option value="${u.id}">${u.username} (Oleh: ${pembuat})</option>`;
+                });
+                ambilDataServers(); 
+            });
+        }
+
+        function ambilDataServers() {
+            fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/servers?per_page=1000`, { headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${PTERO_API}` } }).then(res => res.json()).then(data => {
+                let tabel = `<tr><th>ID</th><th>Nama Server</th><th>Pemilik</th><th>Status</th><th>Aksi</th></tr>`; let count = 0;
+                
+                const iconTrash = `<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>`;
+                const iconLock = `<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>`;
+                const iconUnlock = `<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg>`;
+
+                data.data.forEach(srv => {
+                    let s = srv.attributes; let oId = s.user; let oData = usersMap[oId] || { username: 'Unknown', maker: 'Unknown' };
+                    if (role !== 'pemilik' && role !== 'demo' && role !== 'partner_public' && oData.maker !== myUsername) return; 
+                    if (role === 'demo' && oData.maker !== 'admin' && oData.maker !== 'Admin' && oData.maker !== 'Sistem Pusat') return; 
+                    
+                    count++;
+                    let sBadge = s.suspended ? `<span class="badge badge-suspended"><span class="status-dot dot-danger"></span> Suspended</span>` : `<span class="badge badge-active"><span class="status-dot dot-success"></span> Active</span>`;
+                    if (s.status === 'installing') sBadge = `<span class="badge badge-install"><span class="status-dot dot-warning"></span> Installing</span>`;
+                    let mTag = (role === 'pemilik' || role === 'demo' || role === 'partner_public') ? `<br><span class="reseller-tag">Reseller: ${oData.maker}</span>` : '';
+                    
+                    let btnLock = s.suspended ? `<button class="btn-action-small btn-unsuspend" onclick="konfirmasiUnsuspend(${s.id}, '${s.name}')">${iconUnlock}</button>` : `<button class="btn-action-small btn-suspend" onclick="konfirmasiSuspend(${s.id}, '${s.name}')">${iconLock}</button>`;
+                    let btnAction = `<div class="action-group"><button class="btn-action-small btn-hapus" onclick="konfirmasiHapusServer(${s.id}, '${s.name}')">${iconTrash}</button>${btnLock}</div>`;
+
+                    tabel += `<tr><td style="color:var(--text-sub); font-weight:bold;">#${s.id}</td><td style="font-weight:700; color:var(--text-main); font-size:15px;">${s.name}</td><td><span style="color:var(--primary); font-weight:bold;">${oData.username}</span>${mTag}</td><td>${sBadge}</td><td>${btnAction}</td></tr>`;
+                });
+                if (count === 0) tabel += `<tr><td colspan="5" style="text-align: center; color: var(--warning); padding: 30px;">Belum ada server yang bisa ditampilkan.</td></tr>`;
+                document.getElementById('tabelServer').innerHTML = tabel;
+            }).catch(e => { document.getElementById('tabelServer').innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--danger);">Error koneksi.</td></tr>`; });
+        }
+
+        async function buatServer() {
+            if (role === 'demo') return showAiAlert("Fitur ini dikunci.");
+            let uId = document.getElementById('userSelect').value; let name = document.getElementById('serverName').value.trim(); let ram = document.getElementById('serverRam').value; let cpu = document.getElementById('serverCpu').value; let disk = document.getElementById('serverDisk').value; let locId = document.getElementById('locId').value; let eggId = document.getElementById('eggId').value;
+            
+            if(!uId || !name || !ram || !cpu || !disk) return showAiAlert("Harap lengkapi semua data formulir!"); 
+            let btn = document.querySelector('.btn-tambah'); let originalText = btn.innerHTML;
+            btn.innerHTML = `${spinnerSvg} Sedang create...`; btn.style.pointerEvents = "none";
+            
+            let payload = { "name": name, "user": parseInt(uId), "egg": parseInt(eggId), "docker_image": "ghcr.io/parkervcp/yolks:nodejs_24", "startup": "if [[ -d .git ]] && [[ {{AUTO_UPDATE}} == \"1\" ]]; then git pull; fi; if [[ ! -z ${NODE_PACKAGES} ]]; then /usr/local/bin/npm install ${NODE_PACKAGES}; fi; if [[ ! -z ${UNNODE_PACKAGES} ]]; then /usr/local/bin/npm uninstall ${UNNODE_PACKAGES}; fi; if [ -f /home/container/package.json ]; then /usr/local/bin/npm install; fi; if [[ ! -z ${CUSTOM_ENVIRONMENT_VARIABLES} ]]; then vars=$(echo ${CUSTOM_ENVIRONMENT_VARIABLES} | tr \";\" \"\\n\"); for line in $vars; do export $line; done fi; /usr/local/bin/${CMD_RUN};", "environment": { "INST": "npm", "USER_UPLOAD": "0", "AUTO_UPDATE": "0", "CMD_RUN": "npm start" }, "limits": { "memory": parseInt(ram), "swap": 0, "disk": parseInt(disk), "io": 500, "cpu": parseInt(cpu) }, "feature_limits": { "databases": 5, "backups": 5, "allocations": 5 }, "created": { "locations": [parseInt(locId)], "dedicated_ip": false, "port_range": [] } };
+            
+            try {
+                let res = await fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/servers`, { method: 'POST', headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'Authorization': `Bearer ${PTERO_API}` }, body: JSON.stringify(payload) });
+                if(!res.ok) throw new Error("Format API ditolak.");
+                btn.innerHTML = originalText; btn.style.pointerEvents = "auto";
+                let sText = document.getElementById('userSelect').options[document.getElementById('userSelect').selectedIndex].text; let cName = sText.split(' (')[0]; 
+                
+                document.getElementById('resServerName').innerText = name; document.getElementById('resServerOwner').innerText = cName;
+                document.getElementById('resLink').innerText = `https://${PTERO_DOMAIN}`; document.getElementById('resLink').href = `https://${PTERO_DOMAIN}`;
+                document.getElementById('modalScreenshot').style.display = 'flex'; document.getElementById('serverName').value = ""; ambilDataServers();
+            } catch(e) { btn.innerHTML = originalText; btn.style.pointerEvents = "auto"; showAiAlert("Gagal create."); }
+        }
+
+        let targetDelId = null;
+        function konfirmasiHapusServer(id, name) { if (role === 'demo') return showAiAlert("Fitur dikunci."); targetDelId = id; document.getElementById('delServerName').innerText = name; document.getElementById('modalHapusConfirm').style.display = 'flex'; }
+        async function prosesHapusServer() {
+            tutupModal('modalHapusConfirm'); let btn = document.getElementById('btnKonfirmasiHapus'); let ori = btn.innerText; btn.innerText = "⏳..."; btn.style.pointerEvents = "none";
+            try { await fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/servers/${targetDelId}/force`, { method: 'DELETE', headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${PTERO_API}` } }); showAiAlert("Server terhapus permanen.", "TERHAPUS", true); ambilDataServers(); } catch(e) { showAiAlert("Gagal hapus."); } btn.innerText = ori; btn.style.pointerEvents = "auto";
+        }
+
+        let targetSuspendId = null;
+        function konfirmasiSuspend(id, name) { if (role === 'demo') return showAiAlert("Fitur dikunci."); targetSuspendId = id; document.getElementById('suspendServerName').innerText = name; document.getElementById('modalSuspendConfirm').style.display = 'flex'; }
+        async function prosesSuspendServer() { tutupModal('modalSuspendConfirm'); try { await fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/servers/${targetSuspendId}/suspend`, { method: 'POST', headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${PTERO_API}` } }); showAiAlert("Server dibekukan sementara.", "SUSPENDED", true); ambilDataServers(); } catch(e) {} }
+
+        let targetUnsuspendId = null;
+        function konfirmasiUnsuspend(id, name) { if (role === 'demo') return showAiAlert("Fitur dikunci."); targetUnsuspendId = id; document.getElementById('unsuspendServerName').innerText = name; document.getElementById('modalUnsuspendConfirm').style.display = 'flex'; }
+        async function prosesUnsuspendServer() { tutupModal('modalUnsuspendConfirm'); try { await fetch(`${WORKER_URL}/?https://${PTERO_DOMAIN}/api/application/servers/${targetUnsuspendId}/unsuspend`, { method: 'POST', headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${PTERO_API}` } }); showAiAlert("Server dibuka kembali.", "AKTIF", true); ambilDataServers(); } catch(e) {} }
+
+        function cariDataTabel() { let input = document.getElementById("searchInput").value.toLowerCase(); let tr = document.getElementById("tabelServer").getElementsByTagName("tr"); for (let i = 1; i < tr.length; i++) { if (tr[i].getElementsByTagName("td").length === 1) continue; tr[i].style.display = tr[i].innerText.toLowerCase().indexOf(input) > -1 ? "" : "none"; } }
+        function salinDataServer() { 
+            let text = `✅ *SERVER PUBLIC CREATED* \n\n🖥️ *Server:* ${document.getElementById('resServerName').innerText}\n👤 *Owner:* ${document.getElementById('resServerOwner').innerText}\n🌐 *Login:* ${document.getElementById('resLink').innerText}\n\n_Server aktif!_ 🚀`; navigator.clipboard.writeText(text).then(() => { let btn = document.getElementById('btnSalin'); btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:18px;height:18px;flex-shrink:0;fill:currentColor;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Tersalin!`; setTimeout(() => btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:18px;height:18px;flex-shrink:0;fill:currentColor;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Salin Teks`, 2000); }); 
+        }
+        
+        ambilDataUsers();
+    </script>
+</body>
+</html>
